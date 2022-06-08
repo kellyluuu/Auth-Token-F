@@ -1,23 +1,32 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../services/signup";
 
-function LoginPage(props) {
+function LoginPage({ handleSignupOrLogin, updateMessage }) {
   const [formState, setFormState] = useState({
     email: "",
     password: "",
   });
 
+  let navigate = useNavigate();
+
   function handleChange(e) {
-    // TODO: write the handleChange logic
+    setFormState((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      // TODO: write handleSubmit logic
+      await login(formState);
+      // Let <App> know a user has signed up!
+      handleSignupOrLogin();
+      navigate("/", { replace: true });
     } catch (err) {
-      // Use something other than an alert
-      alert("Invalid Credentials!");
+      // Change this to a modal or toast in deployed apps
+      alert(err.message);
     }
   }
 
